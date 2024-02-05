@@ -1,2 +1,2 @@
-# Bankist app 🏦
+# Bankist application 📲 💱 🏦
 Bankist minimalist application  📱🏦🏧💳💴💵💶💷📲
