@@ -1,621 +1,519 @@
 'use strict';
 
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-// BANKIST APP
+///////////////////////////////////////
+// Modal window selection
+const modal = document.querySelector('.modal');
+const overlay = document.querySelector('.overlay');
+const btnCloseModal = document.querySelector('.btn--close-modal');
+const btnsOpenModal = document.querySelectorAll('.btn--show-modal');
 
-/////////////////////////////////////////////////
-// Data
+// Scroll implementation selection
+const btnScrollTo = document.querySelector('.btn--scroll-to');
+const section1 = document.querySelector('#section--1');
 
-// DIFFERENT DATA! Contains movement dates, currency and locale
+const nav = document.querySelector('.nav');
 
-const account1 = {
-  owner: 'Jonas Schmedtmann',
-  movements: [200, 455.23, -306.5, 25000, -642.21, -133.9, 79.97, 1300],
-  interestRate: 1.2, // %
-  pin: 1111,
+// tab component
+const tabs = document.querySelectorAll('.operations__tab');
+const tabsContainer = document.querySelector('.operations__tab-container');
+const tabsContent = document.querySelectorAll('.operations__content');
 
-  movementsDates: [
-    '2024-02-18T21:31:17.178Z',
-    '2024-02-01T07:42:02.383Z',
-    '2024-02-02T09:15:04.904Z',
-    '2024-02-03T10:17:24.185Z',
-    '2024-02-04T14:11:59.604Z',
-    '2024-02-05T17:01:17.194Z',
-    '2024-02-06T23:36:17.929Z',
-    '2024-02-07T10:51:36.790Z',
-  ],
-  currency: 'EUR',
-  locale: 'pt-PT', // de-DE
+// open modal
+const openModal = function (e) {
+  // prevent page from jumping in the modal
+  e.preventDefault();
+  modal.classList.remove('hidden');
+  overlay.classList.remove('hidden');
 };
 
-const account2 = {
-  owner: 'Jessica Davis',
-  movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
-  interestRate: 1.5,
-  pin: 2222,
-
-  movementsDates: [
-    '2024-02-18T21:31:17.178Z',
-    '2024-02-01T07:42:02.383Z',
-    '2024-02-02T09:15:04.904Z',
-    '2024-02-03T10:17:24.185Z',
-    '2024-02-04T14:11:59.604Z',
-    '2024-02-05T17:01:17.194Z',
-    '2024-02-06T23:36:17.929Z',
-    '2024-02-07T10:51:36.790Z',
-  ],
-  currency: 'USD',
-  locale: 'en-US',
+// closeModal
+const closeModal = function () {
+  modal.classList.add('hidden');
+  overlay.classList.add('hidden');
 };
 
-const accounts = [account1, account2];
+// event listener of openModal
+btnsOpenModal.forEach(btn => btn.addEventListener('click', openModal));
 
-/////////////////////////////////////////////////
-// Elements
-const labelWelcome = document.querySelector('.welcome');
-const labelDate = document.querySelector('.date');
-const labelBalance = document.querySelector('.balance__value');
-const labelSumIn = document.querySelector('.summary__value--in');
-const labelSumOut = document.querySelector('.summary__value--out');
-const labelSumInterest = document.querySelector('.summary__value--interest');
-const labelTimer = document.querySelector('.timer');
+for (let i = 0; i < btnsOpenModal.length; i++)
+  btnsOpenModal[i].addEventListener('click', openModal);
 
-const containerApp = document.querySelector('.app');
-const containerMovements = document.querySelector('.movements');
+btnCloseModal.addEventListener('click', closeModal);
+overlay.addEventListener('click', closeModal);
 
-const btnLogin = document.querySelector('.login__btn');
-const btnTransfer = document.querySelector('.form__btn--transfer');
-const btnLoan = document.querySelector('.form__btn--loan');
-const btnClose = document.querySelector('.form__btn--close');
-const btnSort = document.querySelector('.btn--sort');
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+    closeModal();
+  }
+});
 
-const inputLoginUsername = document.querySelector('.login__input--user');
-const inputLoginPin = document.querySelector('.login__input--pin');
-const inputTransferTo = document.querySelector('.form__input--to');
-const inputTransferAmount = document.querySelector('.form__input--amount');
-const inputLoanAmount = document.querySelector('.form__input--loan-amount');
-const inputCloseUsername = document.querySelector('.form__input--user');
-const inputClosePin = document.querySelector('.form__input--pin');
+//// selecting, creating and deleting elements
+// console.log(document.documentElement);
+// console.log(document.head);
+// console.log(document.body);
 
-/////////////////////////////////////////////////
-// Functions
-const formatMovement = function (date, locale) {
-  // days since transaction
-  const calcDaysPassed = (date1, date2) =>
-    Math.round(Math.abs(date2 - date1) / (1000 * 60 * 60 * 24));
+const header = document.querySelector('.header');
+// const allSections = document.querySelectorAll('.section');
+// console.log(allSections);
 
-  const daysPassed = calcDaysPassed(new Date(), date);
-  // console.log(daysPassed);
+document.getElementById('section---1');
+const allButtons = document.getElementsByTagName('button');
+// console.log(allButtons);
 
-  if (daysPassed === 0) return 'Today';
-  if (daysPassed === 1) return 'Yesterday';
-  if (daysPassed <= 7) return `${daysPassed} days ago`;
-  // else {
-  //   const day = `${date.getDate()}`.padStart(2, 0);
-  //   const month = `${date.getMonth() + 1}`.padStart(2, 0);
-  //   const year = date.getFullYear();
-  //   return `${day}/${month}/${year}`;
-  // }
-  return new Intl.DateTimeFormat(locale).format(date);
-};
+// console.log(document.getElementsByClassName('btn'));
 
-// ------------ currency formatter ------------
-const formatCur = function (value, locale, currency) {
-  return new Intl.NumberFormat(locale, {
-    style: 'currency',
-    currency: currency,
-  }).format(value);
-};
+// Creating and inserting elements
+// .insertAdjacentHTML
+const message = document.createElement('div');
+message.classList.add('cookie-message');
+message.textContent =
+  'We use cookies for improved functionality and analytics.';
+message.innerHTML =
+  'We use cookies for improved functionality and analytics.<button class="btn btn--close-cookie">Got it!</button>';
 
-// ------------ Transaction movement functionality -------
-const displayMovements = function (acc, sort = false) {
-  containerMovements.innerHTML = '';
+// header.prepend(message);
+header.append(message);
+// header.append(message.cloneNode(true));
 
-  const movs = sort
-    ? acc.movements.slice().sort((a, b) => a - b)
-    : acc.movements;
-
-  movs.forEach(function (mov, i) {
-    const type = mov > 0 ? 'deposit' : 'withdrawal';
-
-    // date time of the movement
-    const date = new Date(acc.movementsDates[i]);
-    // calling the formatMovement date function
-    const displayDate = formatMovement(date, acc.locale);
-
-    // number formatter
-    const formattedMov = formatCur(mov, acc.locale, acc.currency);
-    new Intl.NumberFormat(acc.locale, {
-      style: 'currency',
-      currency: acc.currency,
-    }).format(mov);
-
-    const html = `
-      <div class="movements__row">
-        <div class="movements__type movements__type--${type}">${
-      i + 1
-    } ${type}</div>
-        <div class="movements__date">${displayDate}</div>
-        <div class="movements__value">${formattedMov}</div>
-      </div>
-    `;
-
-    containerMovements.insertAdjacentHTML('afterbegin', html);
+//header.before(message);
+//header.after(message)
+message.style.width = '120%'; // set width of message style
+//Delete elements
+document
+  .querySelector('.btn--close-cookie')
+  .addEventListener('click', function () {
+    // remove on click the cookie button
+    // message.remove(); //new method
+    message.parentElement.removeChild(message); // old method
   });
+
+// add event listener on click to scroll (learn more)
+btnScrollTo.addEventListener('click', function (e) {
+  const s1coords = section1.getBoundingClientRect();
+  // console.log(s1coords);
+
+  // console.log(e.target.getBoundingClientRect());
+
+  // console.log('Current scroll (X/Y)', window.pageXOffset, pageYOffset);
+
+  console.log(
+    'height/width viewport',
+    document.documentElement.clientHeight,
+    document.documentElement.clientWidth
+  );
+  // scrolling method-1 (calculation)
+  // window.scrollTo({
+  //   // absolute position relative to the entire page
+  //   left: s1coords.left + window.pageXOffset,
+  //   top: s1coords.top + window.pageYOffset,
+  //   behavior: 'smooth',
+  // });
+  // method-2
+  section1.scrollIntoView({ behavior: 'smooth' });
+});
+
+// page Navigation and scroll to a particular section with JS
+// document.querySelectorAll('.nav__link').forEach(function (el) {
+//   el.addEventListener('click', function (e) {
+//     // prevent default anchor behavior
+//     e.preventDefault();
+//     // implement the smoothscroll
+//     const id = this.getAttribute('href');
+//     console.log(id);
+//     document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
+//   });
+// });
+
+// Event delegation
+// 1. Add event listener to common parent element
+// 2. Determine what element originated the event
+
+document.querySelector('.nav__links').addEventListener('click', function (e) {
+  // prevent default anchor behavior
+  e.preventDefault();
+
+  // Matching strategy
+  if (e.target.classList.contains('nav__link')) {
+    // implement the smoothscroll
+    const id = e.target.getAttribute('href');
+    // console.log(id);
+    document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
+  }
+});
+
+// ------------- Tabbed components -------------
+
+tabsContainer.addEventListener('click', function (e) {
+  const clicked = e.target.closest('.operations__tab');
+  // console.log(clicked);
+
+  // Guard clause (if no click return immediately)
+  if (!clicked) return;
+
+  // Remove active classes
+  tabs.forEach(t => t.classList.remove('operations__tab--active'));
+  tabsContent.forEach(c => c.classList.remove('operations__content--active'));
+
+  // Activate tab
+  clicked.classList.add('operations__tab--active');
+
+  // Activate content area
+  document
+    .querySelector(`.operations__content--${clicked.dataset.tab}`)
+    .classList.add('operations__content--active');
+});
+
+// Menu fade animation in navigation tab
+
+const handleHover = function (e) {
+  console.log(this, e.currentTarget);
+
+  if (e.target.classList.contains('nav__link')) {
+    const link = e.target;
+    // select sibling elements all the other links
+    const sibling = link.closest('.nav').querySelectorAll('.nav__link');
+    const logo = link.closest('.nav').querySelector('img');
+
+    // pass opacity in the siblings
+    sibling.forEach(el => {
+      if (el !== link) el.style.opacity = this;
+    });
+    // pass the logo
+    logo.style.opacity = this;
+  }
 };
 
-const calcDisplayBalance = function (acc) {
-  acc.balance = acc.movements.reduce((acc, mov) => acc + mov, 0);
+// Passing "argument" into handler
+nav.addEventListener('mouseover', handleHover.bind(0.5));
 
-  // currency formatter
-  labelBalance.textContent = formatCur(acc.balance, acc.locale, acc.currency);
+// mouse event to undo what was done in the opacity
+nav.addEventListener('mouseout', handleHover.bind(1));
+
+// // Implementing a Sticky Navigation: The Scroll Event
+// const initialCoords = section1.getBoundingClientRect();
+// console.log(initialCoords);
+// window.addEventListener('scroll', function (e) {
+//   console.log(window.scrollY);
+
+//   // add sticky class
+//   if (this.window.scrollY > initialCoords.top) nav.classList.add('sticky');
+//   else nav.classList.remove('sticky');
+// });
+
+// Sticky navigation: Intersection Observer API
+// const obsCallback = function (entries, observer) {
+//   entries.forEach(entry => {
+//     console.log(entry);
+//   });
+// };
+
+// const obsOptions = {
+//   root: null,
+//   threshold: [0, 0.2],
+// };
+
+// const observer = new IntersectionObserver(obsCallback, obsOptions);
+// observer.observe(section1);
+
+// const header = document.querySelector('.header');
+
+//navHeight
+const navHeight = nav.getBoundingClientRect().height;
+
+// stickyNav functionality
+const stickyNav = function (entries) {
+  const [entry] = entries;
+  //console.log(entry);
+
+  if (!entry.isIntersecting) nav.classList.add('sticky');
+  else nav.classList.remove('sticky');
 };
 
-const calcDisplaySummary = function (acc) {
-  const incomes = acc.movements
-    .filter(mov => mov > 0)
-    .reduce((acc, mov) => acc + mov, 0);
-  // amount-in
-  labelSumIn.textContent = formatCur(incomes, acc.locale, acc.currency);
+const headerObserver = new IntersectionObserver(stickyNav, {
+  root: null,
+  threshold: 0,
+  rootMargin: `-${navHeight}px`,
+});
 
-  const out = acc.movements
-    .filter(mov => mov < 0)
-    .reduce((acc, mov) => acc + mov, 0);
-  // amount-out
-  labelSumOut.textContent = formatCur(Math.abs(out), acc.locale, acc.currency);
+// sticky nav header
+headerObserver.observe(header);
 
-  const interest = acc.movements
-    .filter(mov => mov > 0)
-    .map(deposit => (deposit * acc.interestRate) / 100)
-    .filter((int, i, arr) => {
-      // console.log(arr);
-      return int >= 1;
-    })
-    .reduce((acc, int) => acc + int, 0);
-  // interest
-  labelSumInterest.textContent = formatCur(interest, acc.locale, acc.currency);
+// Reveal sections as you scroll
+const allSections = document.querySelectorAll('.section');
+
+const revealSection = function (entries, observer) {
+  const [entry] = entries;
+  //console.log(entry);
+
+  if (!entry.isIntersecting) return;
+
+  entry.target.classList.remove('section--hidden');
+  observer.unobserve(entry.target);
 };
 
-const createUsernames = function (accs) {
-  accs.forEach(function (acc) {
-    acc.username = acc.owner
-      .toLowerCase()
-      .split(' ')
-      .map(name => name[0])
-      .join('');
+const sectionObserver = new IntersectionObserver(revealSection, {
+  root: null,
+  threshold: 0.15,
+});
+
+allSections.forEach(function (section) {
+  sectionObserver.observe(section);
+  // section.classList.add('section--hidden');
+});
+
+// Lazy loading Images in Javascript
+const imgTargets = document.querySelectorAll('img[data-src]');
+
+const loadImg = function (entries, observer) {
+  const [entry] = entries;
+  console.log(entry);
+
+  if (!entry.isIntersecting) return;
+
+  // Replace src with data-src
+  entry.target.src = entry.target.dataset.src;
+
+  entry.target.addEventListener('load', function () {
+    entry.target.classList.remove('lazy-img');
   });
-};
-createUsernames(accounts);
-
-const updateUI = function (acc) {
-  // Display movements
-  displayMovements(acc);
-
-  // Display balance
-  calcDisplayBalance(acc);
-
-  // Display summary
-  calcDisplaySummary(acc);
+  // unobserved after loading the image
+  observer.unobserve(entry.target);
 };
 
-// logOut Timer
-const startLogOutTimer = function () {
-  const tick = function () {
-    // show the minutes
-    const min = String(Math.trunc(time / 60)).padStart(2, 0);
-    const sec = String(time % 60);
-    // In each call, print the remaining time to UI
-    labelTimer.textContent = `${min}:${sec}`;
+const imgObserver = new IntersectionObserver(loadImg, {
+  root: null,
+  threshold: 0,
+  rootMargin: '200px',
+});
 
-    // When 0 seconds, stop timer and log out user
-    if (time === 0) {
-      clearInterval(timer);
-      labelWelcome.textContent = 'Log in to get started';
-      containerApp.style.opacity = 0;
+imgTargets.forEach(img => imgObserver.observe(img));
+
+// Slider function to keep all variable from the global scoèe
+const slider = function () {
+  const slides = document.querySelectorAll('.slide');
+  const btnLeft = document.querySelector('.slider__btn--left');
+  const btnRight = document.querySelector('.slider__btn--right');
+
+  // slider dots
+  const dotContainer = document.querySelector('.dots');
+
+  let curSlide = 0;
+  const maxSlide = slides.length;
+
+  // const slider = document.querySelector('.slider');
+  // slider.style.transform = 'scale(0.4) translateX(-800px)';
+  // slider.style.overflow = 'visible';
+
+  // slides.forEach((s, i) => (s.style.transform = `translateX(${100 * i}%)`));
+  // 0%, 100%, 200%, 300%
+
+  // createDots function
+  const createDots = function () {
+    slides.forEach(function (_, i) {
+      dotContainer.insertAdjacentHTML(
+        'beforeend',
+        `<button class="dots__dot" data-slide="${i}"></button>`
+      );
+    });
+  };
+  createDots(); // call the function
+
+  const activateDot = function (slide) {
+    document
+      .querySelectorAll('.dots__dot')
+      .forEach(dot => dot.classList.remove('dots__dot--active'));
+
+    document
+      .querySelector(`.dots__dot[data-slide="${slide}"]`)
+      .classList.add('dots__dot--active');
+  };
+  activateDot(0); // activate dot at zero
+
+  const goTOSlide = function (slide) {
+    slides.forEach(
+      (s, i) => (s.style.transform = `translateX(${100 * (i - slide)}%)`)
+    );
+  };
+  goTOSlide(0);
+
+  // Next slide, and return to 0 slide when max
+  const nextSlide = function () {
+    if (curSlide === maxSlide - 1) {
+      curSlide = 0;
+    } else {
+      curSlide++;
     }
-    // Decrease 1s every second
-    time--;
+
+    goTOSlide(curSlide);
+    activateDot(curSlide);
   };
 
-  // set time to 5 times
-  let time = 300;
+  // prevSlide
+  const prevSlide = function () {
+    if (curSlide === 0) {
+      curSlide = maxSlide - 1;
+    } else {
+      curSlide--;
+      activateDot(curSlide);
+    }
 
-  // Call the time every second
-  tick();
-  const timer = setInterval(tick, 1000);
-  return timer;
-};
+    goTOSlide(curSlide);
+  };
 
-///////////////////////////////////////
-// Event handlers
-let currentAccount, timer;
+  btnRight.addEventListener('click', nextSlide);
+  btnLeft.addEventListener('click', prevSlide);
 
-// ------------- Login functionality -------------
-btnLogin.addEventListener('click', function (e) {
-  // Prevent form from submitting
-  e.preventDefault();
-
-  currentAccount = accounts.find(
-    acc => acc.username === inputLoginUsername.value
-  );
-  console.log(currentAccount);
-
-  if (currentAccount?.pin === +inputLoginPin.value) {
-    // Display UI and message
-    labelWelcome.textContent = `Welcome back, ${
-      currentAccount.owner.split(' ')[0]
-    }`;
-    containerApp.style.opacity = 100;
-
-    // create current date and time
-    const now = new Date();
-    const options = {
-      hour: 'numeric',
-      minute: 'numeric',
-      day: 'numeric',
-      month: 'numeric',
-      year: 'numeric',
-      //weekday: 'long',
-    };
-    // set local
-    const locale = navigator.language;
-    console.log(locale);
-    // international dateFormat
-    labelDate.textContent = new Intl.DateTimeFormat(locale, options).format(
-      now
-    );
-
-    // const now = new Date();
-    // const day = `${now.getDay()}`.padStart(2, 0);
-    // const month = `${now.getMonth() + 1}`.padStart(2, 0);
-    // const year = `${now.getFullYear()}`.padStart(2, 0);
-    // const hour = `${now.getHours()}`.padStart(2, 0);
-    // const min = `${now.getMinutes()}`.padStart(2, 0);
-    // labelDate.textContent = `${day}/${month}/${year}, ${hour}:${min}`;
-
-    // Clear input fields
-    inputLoginUsername.value = inputLoginPin.value = '';
-    inputLoginPin.blur();
-
-    // logout timer implementation
-    if (timer) clearInterval(timer);
-    timer = startLogOutTimer();
-
-    // Update UI
-    updateUI(currentAccount);
-  }
-});
-
-// ------------- Money Transfer functionality -------------
-btnTransfer.addEventListener('click', function (e) {
-  e.preventDefault();
-  const amount = +inputTransferAmount.value;
-  const receiverAcc = accounts.find(
-    acc => acc.username === inputTransferTo.value
-  );
-  inputTransferAmount.value = inputTransferTo.value = '';
-
-  if (
-    amount > 0 &&
-    receiverAcc &&
-    currentAccount.balance >= amount &&
-    receiverAcc?.username !== currentAccount.username
-  ) {
-    // Doing the transfer
-    currentAccount.movements.push(-amount);
-    receiverAcc.movements.push(amount);
-
-    // Add transfer date
-    currentAccount.movementsDates.push(new Date().toISOString());
-    receiverAcc.movementsDates.push(new Date().toISOString());
-
-    // Update UI
-    updateUI(currentAccount);
-
-    // Reset timer and start new after a transfer
-    clearInterval(timer);
-    timer = startLogOutTimer();
-  }
-});
-
-// ------------- Loan functionality -------------
-btnLoan.addEventListener('click', function (e) {
-  e.preventDefault();
-
-  const amount = Math.floor(inputLoanAmount.value);
-
-  if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
-    // create timer when requesting a loan
-    setTimeout(function () {
-      // Add movement
-      currentAccount.movements.push(amount);
-
-      // Add Loan Date
-      currentAccount.movementsDates.push(new Date().toISOString());
-
-      // Update UI
-      updateUI(currentAccount);
-
-      // Reset timer and start new after requesting a loan
-      clearInterval(timer);
-      timer = startLogOutTimer();
-    }, 2500);
-  }
-  inputLoanAmount.value = '';
-});
-
-// ------------- Close account functionality -------------
-btnClose.addEventListener('click', function (e) {
-  e.preventDefault();
-
-  if (
-    inputCloseUsername.value === currentAccount.username &&
-    +inputClosePin.value === currentAccount.pin
-  ) {
-    const index = accounts.findIndex(
-      acc => acc.username === currentAccount.username
-    );
-    console.log(index);
-    // .indexOf(23)
-
-    // Delete account
-    accounts.splice(index, 1);
-
-    // Hide UI
-    containerApp.style.opacity = 0;
-  }
-
-  inputCloseUsername.value = inputClosePin.value = '';
-});
-
-let sorted = false;
-btnSort.addEventListener('click', function (e) {
-  e.preventDefault();
-  displayMovements(currentAccount.movements, !sorted);
-  sorted = !sorted;
-});
-
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-// LECTURES
-/*
-console.log(23 === 23.0);
-
-// base
-// binary 2 - 0 1
-console.log(0.1 + 0.2);
-console.log(0.1 + 0.2 === 0.3);
-
-// Conversion
-console.log(Number('23'));
-console.log(+'23');
-
-// Parsing
-console.log(Number.parseInt('30px', 10));
-console.log(Number.parseInt('e23', 10));
-
-console.log(Number.parseInt('   2.5rem  '));
-console.log(Number.parseInt('   2.5rem  '));
-
-// console.log(parseFloat(' 2.5rem '));
-
-// Check if value is NaN
-console.log(Number.isNaN(20));
-console.log(Number.isNaN('20'));
-console.log(Number.isNaN(+'20X'));
-console.log(Number.isNaN(23 / 0));
-
-// Checking if value is number
-console.log(Number.isFinite(20));
-console.log(Number.isFinite('20'));
-console.log(Number.isFinite(+'20X'));
-console.log(Number.isFinite(23 / 0));
-
-console.log(Number.isInteger(23));
-console.log(Number.isInteger(23.0));
-console.log(Number.isInteger(23 / 0));
-
-// math sqrt, max
-console.log(Math.sqrt(25));
-console.log(25 ** (1 / 2));
-console.log(8 ** (1 / 3));
-
-console.log(Math.max(5, 18, 23, 11, 2));
-console.log(Math.max(5, 18, '23', 11, 2));
-console.log(Math.max(5, 18, '23px', 11, 2));
-
-console.log(Math.min(5, 18, 23, 11, 2));
-
-console.log(Math.PI * Number.parseFloat('10px') ** 2);
-
-console.log(Math.trunc(Math.random() * 6) + 1);
-
-const randomInt = (min, max) => Math.trunc(Math.random() * (max - min) + 1); // 0...1 -> 0...(max - min) -> min...max
-console.log(randomInt(10, 20));
-
-// Rounding integers
-console.log(Math.trunc(23.3));
-
-console.log(Math.round(23.3));
-console.log(Math.round(23.9));
-
-console.log(Math.ceil(23.3));
-console.log(Math.ceil(23.9));
-
-console.log(Math.floor(23.3));
-console.log(Math.floor(23.9));
-
-console.log(Math.trunc(-23.3));
-console.log(Math.floor(-23.3));
-
-// Rounding decimals
-console.log((2.7).toFixed(0));
-console.log((2.7).toFixed(3));
-console.log((2.345).toFixed(2));
-console.log(+(2.345).toFixed(2));
-
-
-console.log(5 % 2);
-console.log(5 / 2); // 5 = 2 * 2 + 1
-
-console.log(8 % 3);
-console.log(8 / 3); // 8 = 2 * 3 + 2
-
-console.log(6 % 2);
-console.log(6 / 2);
-
-console.log(7 % 2);
-console.log(6 / 2);
-
-const isEven = n => n % 2 === 0;
-console.log(isEven(8));
-console.log(isEven(23));
-console.log(isEven(514));
-
-labelBalance.addEventListener('click', function () {
-  [...document.querySelectorAll('.movements__row')].forEach(function (row, i) {
-    // 0, 2, 4, 6
-    if (i % 2 === 0) row.style.backgroundColor = 'orangered';
-    // 0, 3, 6, 9
-    if (i % 3 === 0) row.style.backgroundColor = 'blue';
+  // Keyboard events
+  document.addEventListener('keydown', function (e) {
+    console.log(e);
+    if (e.key === 'ArrowLeft') prevSlide(); // method 1
+    e.key === 'ArrowRight' && nextSlide(); // method 2 - short-circuiting
   });
+
+  // dotContainer
+  dotContainer.addEventListener('click', function (e) {
+    if (e.target.classList.contains('dots__dot')) {
+      const slide = e.target.dataset.slide;
+      goTOSlide(slide);
+      activateDot(slide);
+    }
+  });
+};
+slider(); // call the slider function
+
+// clearer and cleaner in an init()
+// const init = function () {
+//   slider.goTOSlide(0);
+//   createDots(0);
+//   activateDot(0);
+// };
+// init();
+// curSlide = 1: -100%, 0%, 100%, 200%
+
+/*
+// Styles
+message.style.backgroundColor = '#37383d';
+message.style.width = '120%';
+
+console.log(message.style.height);
+console.log(message.style.backgroundColor);
+
+console.log(getComputedStyle(message).color);
+console.log(getComputedStyle(message).height);
+
+// ParseFloat
+message.style.height =
+  Number.parseFloat(getComputedStyle(message).height, 10) + 30 + 'px';
+
+document.documentElement.style.setProperty('--color-primary', 'orangered');
+
+// Attributes
+const logo = document.querySelector('.nav__logo');
+console.log(logo.alt);
+console.log(logo.src);
+console.log(logo.className);
+
+// Non-standard
+console.log(logo.designer);
+console.log(logo.getAttribute('designer'));
+logo.setAttribute('company', 'Bankist');
+
+console.log(logo.src);
+console.log(logo.getAttribute('src'));
+
+const link = document.querySelector('.nav__link--btn');
+
+console.log(link.href);
+console.log(link.getAttribute('href'));
+
+// Data Attributes
+console.log(logo.dataset.versionNumber);
+
+// Classes
+logo.classList.add('c', 'j');
+logo.classList.remove('c', 'j');
+logo.classList.toggle('c');
+logo.classList.contains('c'); // not includes
+
+// Don't use it because it overwrite previous classes
+logo.className = 'jonas';
+*/
+
+// Types of Events and Event Handlers
+// const h1 = document.querySelector('h1');
+
+// h1.addEventListener('mouseenter', function (e) {
+//   alert('addEventListener: Great! You are reading the heading :D');
+// });
+
+// h1.onmouseenter = function (e) {
+//   alert('addEventListener: Great! You are reading the heading :D');
+// };
+
+// const alertH1 = function (e) {
+//   alert('addEventListener: Great! You are reading the heading :D');
+//   h1.removeEventListener('mouseenter', alertH1);
+// };
+
+// h1.addEventListener('mouseenter', alertH1);
+
+// setTimeout(() => h1.removeEventListener('mouseenter', alertH1), 3000);
+
+// Event Propagation: Bubbling and Capturing
+//rgb(255,255,255)
+// const randomInt = (min, max) =>
+//   Math.floor(Math.random() * (max - min + 1) + min);
+// const randomColor = () =>
+//   `rgb(${randomInt(0, 255)},${randomInt(0, 255)},${randomInt(0, 255)})`;
+
+// document.querySelector('.nav__link').addEventListener('click', function (e) {
+//   this.style.backgroundColor = randomColor;
+// });
+
+// document.querySelector('.nav__links').addEventListener('click', function (e) {
+//   this.style.backgroundColor = randomColor;
+// });
+
+// document.querySelector('.nav').addEventListener('click', function (e) {});
+
+/*
+// DOM Traversing
+const h1 = document.querySelector('h1');
+
+// Going downwards: child
+console.log(h1.querySelectorAll('.highlight'));
+console.log(h1.childNodes);
+console.log(h1.children);
+h1.firstElementChild.style.color = 'white';
+h1.lastElementChild.style.color = 'orangered';
+
+// Going upwards: parents
+console.log(h1.parentNode);
+console.log(h1.parentElement);
+
+// changing the background of the header
+h1.closest('.header').style.background = 'var(--gradient-secondary)';
+
+h1.closest('h1').style.background = 'var(--gradient-primary)';
+
+// Going sideways: siblings
+console.log(h1.previousElementSibling);
+console.log(h1.nextElementSibling);
+
+console.log(h1.previousSibling);
+console.log(h1.nextSibling);
+
+console.log(h1.parentElement.children);
+[...h1.parentElement.children].forEach(function (el) {
+  if (el != h1) el.style.transform = 'scale(0.5)';
+});
+*/
+document.addEventListener('DOMContentLoaded', function (e) {
+  console.log('HTML parsed and DOM tree built!', e);
 });
 
-
-// 287,460,000,000
-const diameter = 287_460_000_000;
-console.log(diameter);
-
-const price = 345_99;
-console.log(price);
-
-const transferFee1 = 15_00;
-const transferFee2 = 1_500;
-
-const PI = 3.1415;
-console.log(PI);
-
-console.log(Number('230_000')); // NaN
-console.log(parseInt('230_000')); // 230
-
-// BigINT
-console.log(2 ** 53 - 1);
-console.log(Number.MAX_SAFE_INTEGER);
-
-// Operations
-console.log(10000n + 10000n);
-console.log(123456754312345678909876543212345n * 10000000n);
-
-const huge = 2345678987654323456789876323456n;
-const num = 23;
-console.log(huge * BigInt(num));
-
-// Exceptions
-console.log(20n > 15);
-console.log(20n === 20);
-console.log(typeof 20n);
-console.log(20n === '20');
-
-console.log(huge + ' is REALLY big!!');
-
-// Divisions
-console.log(11n / 3n);
-console.log(10 / 3);
-
-
-
-// ----------- Date and Time in JavaScript -----------
-// create a date
-
-const now = new Date();
-console.log(now);
-
-console.log(new Date('Aug 02 2020 18:05:41'));
-console.log(new Date('December 24, 2015'));
-console.log(new Date(account1.movementsDates[0]));
-
-console.log(new Date(2037, 10, 19, 15, 23, 5));
-console.log(new Date(2037, 10, 31));
-
-console.log(new Date(0));
-console.log(new Date(3 * 24 * 60 * 1000));
-
-
-// Working with dates
-const future = new Date(2037, 10, 19, 15, 23);
-console.log(future);
-console.log(future.getFullYear());
-console.log(future.getMonth());
-console.log(future.getDate());
-console.log(future.getDay());
-console.log(future.getHours());
-console.log(future.getMinutes());
-console.log(future.getSeconds());
-console.log(future.toISOString());
-console.log(future.getTime()); // time since inception of th creation of Jan 1st, 1970
-
-console.log(new Date(2142253380000)); // numeric-to-date
-
-console.log(Date.now()); // today
-
-future.setFullYear(2040);
-console.log(future);
-*/
-
-/*
-// Operations With Dates
-const future = new Date(2037, 10, 10, 15, 23);
-console.log(+future);
-
-const calcDaysPassed = (date1, date2) =>
-  Math.abs(date2 - date1) / (1000 * 60 * 60 * 24);
-const days1 = calcDaysPassed(
-  new Date(2037, 3, 4),
-  new Date(2037, 3, 14, 10, 8)
-);
-console.log(days1);
-
-
-// Internalization of Dates (Intl)
-// Internalization of Number
-const num = 3884764.23;
-
-const options = {
-  style: 'currency',
-  unit: 'celsius',
-  currency: 'EUR',
-};
-
-console.log('US: ', new Intl.NumberFormat('en-US', options).format(num));
-console.log('Germany: ', new Intl.NumberFormat('de-DE', options).format(num));
-console.log('Syria: ', new Intl.NumberFormat('ar-SY', options).format(num));
-console.log(
-  'Brower: ',
-  new Intl.NumberFormat(navigator.language, options).format(num)
-);
-console.log(
-  navigator.language,
-  new Intl.NumberFormat(navigator.language, options).format(num)
-);
-*/
-
-/*
-// Timers: setTimeout and setInterval
-const ingredients = ['olives', 'spinach'];
-const pizzaTimer = setTimeout(
-  (ing1, ing2) =>
-    console.log(`Here is your pizza with ${ing1} and  ${ing2} 🍕`),
-  3000,
-  ...ingredients
-);
-console.log('Waiting...');
-
-if (ingredients.includes('spinach')) clearTimeout(pizzaTimer);
-
-// setTimeout
-setTimeout(function () {
-  const now = new Date();
-  console.log(now);
-}, 1000);
-*/
+window.addEventListener('beforeunload', function (e) {
+  e.preventDefault();
+  console.log(e);
+  e.returnValue = '';
+});
