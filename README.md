@@ -1,5 +1,5 @@
 # Bankist application 📲 💱 🏦
-[Bankist](https://kmohamedalie.github.io/BANKIST/) minimalist application is a real-world FinTech web app, hands on project with Html, CSS and JavaScript programming using array datastructure extensively.It is developed by me as part of my [JavaScript programming](https://www.udemy.com/course/the-complete-javascript-course/?utm_campaign=website1010&utm_medium=website1010&utm_source=mycoupon) course with [Jonas Schmedtmann](https://codingheroes.io/). 
+[Bankist](https://bankfintech.netlify.app/) minimalist application is a real-world FinTech web app, hands on project with Html, CSS and JavaScript programming using array datastructure extensively.It is developed by me as part of my [JavaScript programming](https://www.udemy.com/course/the-complete-javascript-course/?utm_campaign=website1010&utm_medium=website1010&utm_source=mycoupon) course with [Jonas Schmedtmann](https://codingheroes.io/). 
 
 ### Marketing page:
 
